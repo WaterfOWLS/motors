@@ -5,10 +5,6 @@ import operator
 import argparse
 import binascii
 
-#for BeagleBoneBlack
-import Adafruit_BBIO.UART as UART
-import Adafruit_BBIO.GPIO as GPIO
-
 class motor_comm():
     def __init__(self):
         #VRCSR protocol defines  
@@ -47,20 +43,12 @@ class motor_comm():
         self.send_motor_command = False
   
         #open the serial port
-        UART.setup("UART4")
         try:        
-            self.port = serial.Serial(port = "/dev/ttyO4",baudrate=115200)
+            self.port = serial.Serial(port = "/dev/ttyAMA0",baudrate=115200)
             self.port.timeout = 1
         except IOError:
             print ("Error:  Could not open serial port: " + args.portname)     
             sys.exit()
-        
-        #setup GPIO
-        rec_output_enable_pin="P9_12"
-        GPIO.setup(rec_output_enable_pin, GPIO.OUT)
-        #set receiver output enable to enable
-        GPIO.output(rec_output_enable_pin, GPIO.LOW)
-        
         
     def set_thrust(self,thrust_1='a',thrust_2='a'):
       '''
