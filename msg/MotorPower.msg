@@ -1,0 +1,2 @@
+float32 power1
+float32 power2
