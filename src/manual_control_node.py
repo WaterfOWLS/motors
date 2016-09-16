@@ -3,7 +3,7 @@
 Node that uses manual input to control the RPM of the motors
 '''
 import rospy
-from beagleboneblack.msg import MotorRPM
+from raspberrypi.msg import MotorRPM
 from geometry_msgs.msg import Twist
 
 class motor_control ():

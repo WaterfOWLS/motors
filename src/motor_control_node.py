@@ -6,9 +6,9 @@
 '''
 import rospy
 from pid import PID
-from beagleboneblack.msg import MotorPower
-from beagleboneblack.msg import MotorResponse
-from beagleboneblack.msg import MotorRPM
+from raspberrypi.msg import MotorPower
+from raspberrypi.msg import MotorResponse
+from raspberrypi.msg import MotorRPM
 
 class motor_control():
   def __init__(self): 

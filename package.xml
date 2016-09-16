@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>beagleboneblack</name>
+  <name>raspberrypi</name>
   <version>0.1.0</version>
   <description>TempleWaterfOWL code to be placed on BeagleBone Black</description>
 

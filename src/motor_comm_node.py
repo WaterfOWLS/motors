@@ -6,8 +6,8 @@
 '''
 from motor_comm import *
 import rospy
-from beagleboneblack.msg import MotorPower
-from beagleboneblack.msg import MotorResponse
+from raspberrypi.msg import MotorPower
+from raspberrypi.msg import MotorResponse
 
 
 def power_level(data,motors):
