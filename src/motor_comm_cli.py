@@ -1,47 +1,99 @@
+#!/usr/bin/python
+
+'''file: motor_comm_cli.py
+
+ This file is a script meant to be run as a simple command line
+ interface to the motor_comm class in motor_comm.py. It currently
+ accepts 5 commands, described below:
+
+ thrust - This command takes two floating point numbers between 1 and
+          0 separated by spaces as arguments, and sets the thrust of
+          each motor to this value
+
+ left   - set the thrust of the right
+          motor to .9 and the left to .1 to turn the boat left
+
+ right  - Same as left, but well, the opposite
+
+ stop   - sets the thrust of both motors to 0
+
+ exit   - exits the prompt, closing the script
+
+ After each command is entered, a status message is printed, as well
+ as the status code returned by the motor controllers.
+
+'''
+
 # system modules
-from __future__ import print_function # python 3 print for easy fancy in-place output
+# python 3 print for easy fancy in-place output
+from __future__ import print_function 
 
 # local, user defined modules
-import motor_comm # class for motor communication
+from motor_comm import motor_comm # class for motor communication
 
+# define the main function
 def main():
+
+    # create a motor controller object to communicate with the drivers over
+    # uart
     motors = motor_comm()
 
+    # string to hold the last status message
     #
     last_msg = ''
+
+    # until the user chooses to exit
+    #
     while(True):
 
         # read a line of input from the user
         input = raw_input("Enter command > ")
         toks = input.split(" ") # split the input by spaces
 
+        # If else ladder on the first (and possibly only) word of the command
         if(toks[0] == "thrust"):
-            if(len(toks) > 2):
+
+            if(len(toks) > 2): # if two thrust values are given
                 try:
                     thrust_1 = float(toks[1])
                     thrust_2 = float(toks[1])
                     motors.set_thrust(thrust_1, thrust_2)
                     last_msg = "Thrust set to %f %f" % (thrust_1, thrust_2)
-                except ValueError:
+
+                # ran into an error parsing left and right thrust value
+                except ValueError: 
                     last_msg = "Error parsing Command. Last command: " + last_msg
+
             # end if len(toks)
-        elif(toks[0] == "left"):
+
+        elif(toks[0] == "left"): # command is to turn left
             motors.set_thrust(.9, 0)
             last_msg = "Left > Thrust set to %f %f" % (.9, 0)
     
-        elif(toks[0] == "right"):
+        elif(toks[0] == "right"): # command is to turn right
             motors.set_thrust(0, .9)
             last_msg = "Right > Thrust set to %f %f" % (0, .9)
+
+        elif(toks[0] == "stop"): # command is to turn stop
+            motors.set_thrust(0, 0)
+            last_msg = "Right > Thrust set to %f %f" % (0, 0)
                
-        elif(toks[0] == "exit"):
-            break
-        else:
+        elif(toks[0] == "exit"): # command is to exit
+            break # exit the infinite loop
+
+        else: # display the last command entered
             last_msg = "Unknown Command. Last command: " + last_msg
         # end if-else ladder
 
-        motors.send_motors_power_level() 
-        print(last_msg)
-    # end while
+        motors.send_motors_power_level() # send the motor thrust over Uart
+
+        # note: sending motor power level implicitly prints the status
+        # retuned by the drivers to the console
+
+        print(last_msg) # print the last input message
+
+    # end while true
+
 # end def main()
     
 if __name__ == "__main__":
