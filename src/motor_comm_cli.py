@@ -34,7 +34,7 @@ from time import sleep
 from motor_comm import motor_comm # class for motor communication
 
 # some global variables
-thrust = [0.0, 0.0] # thrust value for motors
+thrust = [0.3, 0.3] # thrust value for motors
 motors = None # motor_comm instance
 
 # method to be set up as a thread
@@ -53,6 +53,8 @@ def run_motors():
 # define the main function
 def main():
 
+    global thrust
+    global motors
     # create a motor controller object to communicate with the drivers over
     # uart
     motors = motor_comm()
@@ -73,7 +75,7 @@ def main():
         toks = input.split(" ") # split the input by spaces
 
         # If else ladder on the first (and possibly only) word of the command
-        if(toks[0].toLower() == "thrust"):
+        if(toks[0].lower() == "thrust"):
 
             if(len(toks) > 2): # if two thrust values are given
                 try:
@@ -88,19 +90,19 @@ def main():
 
             # end if len(toks)
 
-        elif(toks[0].toLower() == "left"): # command is to turn left
+        elif(toks[0].lower() == "left"): # command is to turn left
             thrust = [.9, 0]
             last_msg = "Left > Thrust set to %f %f" % (.9, 0)
     
-        elif(toks[0].toLower() == "right"): # command is to turn right
+        elif(toks[0].lower() == "right"): # command is to turn right
             thrust = [0, .9]
             last_msg = "Right > Thrust set to %f %f" % (0, .9)
 
-        elif(toks[0].toLower == "stop"): # command is to turn stop
+        elif(toks[0].lower() == "stop"): # command is to turn stop
             thrust = [0, 0]
             last_msg = "Right > Thrust set to %f %f" % (0, 0)
                
-        elif(toks[0].toLower == "exit"): # command is to exit
+        elif(toks[0].lower() == "exit"): # command is to exit
             break # exit the infinite loop
 
         else: # display the last command entered
