@@ -144,11 +144,17 @@ class motor_comm:
 
         # TODO remove this print statement (I think it was just for debugging)
         # and return the response instead of true of false
-        #print ("Got response. Length: %d" % len(response_buf))
+        # length of response seems to be 8
+        print ("Got response. Length: %d" % len(response_buf))
+        # for deubgging purposes, print buffer to standard output
+        print(response_buf)
 
         #parse the response. If no response all zeros in data
         try:
+            # response does not match this unpack format, currently trying to decode
+            # response format
             self.response = struct.unpack('=HBBBB I BffffB I', response_buf)
+            print("response unpacked")
         except struct.error:
             self.response=[] 
             self.response.append(0)

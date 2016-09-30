@@ -43,6 +43,15 @@ def motor_node():
   '''
   motors = motor_comm()
 
+  # message format is:
+
+  # Header header
+  # uint8 motor_id
+  # float32 rpm
+  # float32 bus_voltage
+  # float32 bus_current
+  # float32 temperature
+  # uint32 fault_flag
   motors.pub = rospy.Publisher('motor_data', MotorResponse, queue_size=10)
   rospy.init_node('motor_comm')
   rate = rospy.Rate(20)

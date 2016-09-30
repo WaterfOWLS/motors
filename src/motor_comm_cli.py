@@ -22,6 +22,7 @@
  After each command is entered, a status message is printed, as well
  as the status code returned by the motor controllers.
 
+ TODO: implement ncurses support for making the output and input a little nicer
 '''
 
 # system modules
@@ -34,7 +35,7 @@ from time import sleep
 from motor_comm import motor_comm # class for motor communication
 
 # some global variables
-thrust = [0.3, 0.3] # thrust value for motors
+thrust = [0.1, 0.1] # thrust value for motors
 motors = None # motor_comm instance
 
 # method to be set up as a thread
@@ -45,8 +46,10 @@ def run_motors():
 
     while True:
         motors.set_thrust(thrust[0], thrust[1])
-        motors.send_motors_power_level() # send the motor thrust over Uart
-        sleep(.1)
+        if motors.send_motors_power_level(): # send the motor thrust over Uart
+            pass
+            # print(motors.response)
+        sleep(2)
         
 # end def set_thrust()
     
@@ -71,7 +74,7 @@ def main():
     while(True):
 
         # read a line of input from the user
-        input = raw_input("Enter command > ")
+        input = raw_input()
         toks = input.split(" ") # split the input by spaces
 
         # If else ladder on the first (and possibly only) word of the command
@@ -98,9 +101,13 @@ def main():
             thrust = [0, .9]
             last_msg = "Right > Thrust set to %f %f" % (0, .9)
 
+        elif(toks[0].lower() == "reverse"): # command is to reverse motors
+            thrust = [-.1, -.1]
+            last_msg = "Reverse > Thrust set to %f %f" % (-0.1, -0.1)
+
         elif(toks[0].lower() == "stop"): # command is to turn stop
             thrust = [0, 0]
-            last_msg = "Right > Thrust set to %f %f" % (0, 0)
+            last_msg = "Thrust > Thrust set to %f %f" % (0, 0)
                
         elif(toks[0].lower() == "exit"): # command is to exit
             break # exit the infinite loop
@@ -109,7 +116,7 @@ def main():
             last_msg = "Unknown Command. Last command: " + last_msg
         # end if-else ladder
 
-        print(last_msg) # print the last input message
+        # print(last_msg) # print the last input message
 
     # end while true
 
