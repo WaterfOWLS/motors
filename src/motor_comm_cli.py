@@ -45,7 +45,8 @@ def run_motors():
 
     while True:
         motors.set_thrust(thrust[0], thrust[1])
-        motors.send_motors_power_level() # send the motor thrust over Uart
+        if motors.send_motors_power_level(): # send the motor thrust over Uart
+            pass # todo maybe print motor response?
         sleep(.1)
         
 # end def set_thrust()
@@ -97,6 +98,10 @@ def main():
         elif(toks[0].lower() == "right"): # command is to turn right
             thrust = [0, .9]
             last_msg = "Right > Thrust set to %f %f" % (0, .9)
+
+        elif(toks[0].lower() == "reverse"): # command is to turn right
+            thrust = [-.1, -.1]
+            last_msg = "Reverse > Thrust set to %f %f" % (-0.3, -0.3)
 
         elif(toks[0].lower() == "stop"): # command is to turn stop
             thrust = [0, 0]

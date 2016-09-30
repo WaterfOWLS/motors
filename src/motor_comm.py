@@ -142,10 +142,6 @@ class motor_comm:
         #read in received lines sent from motor
         response_buf = self.port.read(expected_response_length)
 
-        # TODO remove this print statement (I think it was just for debugging)
-        # and return the response instead of true of false
-        #print ("Got response. Length: %d" % len(response_buf))
-
         #parse the response. If no response all zeros in data
         try:
             self.response = struct.unpack('=HBBBB I BffffB I', response_buf)
