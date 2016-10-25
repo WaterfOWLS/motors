@@ -34,7 +34,7 @@ from time import sleep
 from motor_comm import motor_comm # class for motor communication
 
 # some global variables
-thrust = [0.3, 0.3] # thrust value for motors
+thrust = [0.05, 0.05] # thrust value for motors
 motors = None # motor_comm instance
 
 # method to be set up as a thread
@@ -99,9 +99,13 @@ def main():
             thrust = [0, .9]
             last_msg = "Right > Thrust set to %f %f" % (0, .9)
 
-        elif(toks[0].lower() == "reverse"): # command is to turn right
+        elif(toks[0].lower() == "forward"): # command is to forward
+            thrust = [.1, .1]
+            last_msg = "Reverse > Thrust set to %f %f" % (0.1, 0.1)
+
+        elif(toks[0].lower() == "reverse"): # command is to reverse
             thrust = [-.1, -.1]
-            last_msg = "Reverse > Thrust set to %f %f" % (-0.3, -0.3)
+            last_msg = "Reverse > Thrust set to %f %f" % (-0.1, -0.1)
 
         elif(toks[0].lower() == "stop"): # command is to turn stop
             thrust = [0, 0]

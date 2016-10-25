@@ -67,13 +67,11 @@ class motor_comm:
         if (thrust_2 == 'a'):
             thrust_2=self.thrust[1]
 
-        # TODO: Examine and fix this? seems arbitrary
-        # motors take thrust levels between 1 and 0
-        # scale inputs to be less than 1
-        while (thrust_1 > 1):
-            thrust_1=thrust_1/10
-        while (thrust_2 > 1):
-            thrust_2=thrust_2/10
+        # clamp thrust values between -1 and 1
+        thrust_1=min(thrust_1, 1)
+        thrust_1=max(-1, thrust_1)
+        thrust_2=min(thrust_2, 1)
+        thrust_3=max(-1, thrust_2)
             
         self.thrust[0]=thrust_1
         self.thrust[1]=thrust_2
@@ -121,8 +119,6 @@ class motor_comm:
         #generate the payload, limiting the thrust to reasonable values
         payload = bytearray(struct.pack('BB', self.PROPULSION_COMMAND, int(self.motor_response_node)))
         for t in self.thrust:
-            t = max(t,-1)
-            t = min(t, 1)
             payload += bytearray(struct.pack('f',t))
 
         payload_checksum = bytearray(struct.pack('i', binascii.crc32(payload)))    

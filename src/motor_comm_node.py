@@ -9,13 +9,19 @@ import rospy
 from raspberrypi.msg import MotorPower
 from raspberrypi.msg import MotorResponse
 
+import atexit
+
+last_power_update_time = 0
+
 
 def power_level(data,motors):
   '''
   Function to send power levels to motor 
   '''
+  global last_power_update_time
+  last_power_update_time = rospy.get_rostime().to_sec()
+
   motors.set_thrust(data.power1,data.power2)
-  
 
 def motor_response_to_ros(motors):
   '''
@@ -37,11 +43,17 @@ def motor_response_to_ros(motors):
   motors.pub.publish(motor_data)    
   
   
+def cleanup(motors):
+  motors.set_thrust(0.0, 0.0)
+  motors.send_motors_power_level()
+  
 def motor_node():
   '''
   Top level function to handle connection of motors with ROS
   '''
   motors = motor_comm()
+  atexit.register(cleanup, motors=motors)
+  global last_power_update_time
 
   motors.pub = rospy.Publisher('motor_data', MotorResponse, queue_size=10)
   rospy.init_node('motor_comm')
@@ -50,12 +62,14 @@ def motor_node():
   #spins at rate and puts the motors response on ROS
   while not rospy.is_shutdown():
     motors.now = rospy.get_rostime()
+
+    if(motors.now.to_sec() - last_power_update_time) > 5:
+      motors.set_thrust(0.0, 0.0)
+
     if motors.send_motors_power_level():
       motor_response_to_ros(motors)
     rospy.Subscriber("motor_power", MotorPower, power_level, motors)
     rate.sleep()
-    
-
 
 if __name__ == '__main__':
   try: 
