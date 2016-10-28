@@ -1,0 +1,30 @@
+#!/bin/sh
+# /etc/init.d/run_ros
+
+run_ros () {
+  HOME="/home/pi"
+# source ros environment
+  . $HOME/catkin_ws/devel/setup.sh;
+# run ros core
+  ( roscore ) &
+# run motor_comm_node
+  python $HOME/catkin_ws/src/Motor-Controller/src/motor_comm_node.py
+}
+
+IP="`ifconfig  | grep 'inet addr:'192.168.0.10''| cut -d: -f2 | awk '{ print $1}'`";
+
+if [ "$IP" ] ; then
+  echo "IP address 192.168.0.10 established, running ros_core and motor_comm_node";
+  run_ros
+else
+  sleep 15
+  IP="`ifconfig  | grep 'inet addr:'192.168.0.10''| cut -d: -f2 | awk '{ print $1}'`";
+
+  if [ "$IP" ] ; then
+    echo "IP address 192.168.0.10 established, running ros_core and motor_comm_node";
+    run_ros
+  else
+    echo "IP address not 192.168.0.10, starting normally";
+    exit 0
+  fi
+fi
