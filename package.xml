@@ -1,13 +1,9 @@
-<?xml version="1.0"?>
 <package>
-  <name>raspberrypi</name>
-  <version>0.1.0</version>
-  <description>TempleWaterfOWL code to be placed on BeagleBone Black</description>
-
-  <maintainer email="temple.roboboat.2015@gmail.com">TempleWaterfOWLS</maintainer>
+  <name>motors</name>
+  <version>0.2.0</version>
+  <description>Motor controller and monitoring</description>
+  <maintainer email="WaterfOWLS2017@gmail.com">Temple WaterfOWLS</maintainer>
   <license>BSD</license>
-  <url type="website">http://sites.temple.edu/waterfowls/</url>
-  <author email="jacob.sloan.simon@gmail.com">Jake Simon</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
