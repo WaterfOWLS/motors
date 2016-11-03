@@ -1,5 +1,5 @@
 <package>
-  <name>motors</name>
+  <name>Motor-Controller</name>
   <version>0.2.0</version>
   <description>Motor controller and monitoring</description>
   <maintainer email="WaterfOWLS2017@gmail.com">Temple WaterfOWLS</maintainer>
