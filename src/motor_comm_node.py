@@ -6,8 +6,8 @@
 '''
 from motor_comm import *
 import rospy
-from raspberrypi.msg import MotorPower
-from raspberrypi.msg import MotorResponse
+from motors.msg import MotorPower
+from motors.msg import MotorResponse
 
 import atexit
 

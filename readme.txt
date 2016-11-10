@@ -6,12 +6,12 @@ When on the Dlink the ip for the raspberry pi is 192.168.0.102
 To run the code:
   roscore
   <new bash>
-  rosrun raspberrypi motor_comm_node.py
+  rosrun motors motor_comm_node.py
   
  This will run the node. 
  
 To change the values sent to motor use:
- rostopic pub -r 1 motor_power raspberrypi/MotorPower 0.1 0.1
+ rostopic pub -r 1 motor_power motors/MotorPower 0.1 0.1
  
  This sends 10% power to both motors and updates at a rate of 1 Hz
  

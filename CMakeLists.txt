@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(Motors)
+project(motors)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -52,11 +52,10 @@ find_package(catkin REQUIRED COMPONENTS
  )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+ add_service_files(
+   FILES
+   MotorPower2.srv
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
