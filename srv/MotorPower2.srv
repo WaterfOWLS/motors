@@ -1,0 +1,5 @@
+float32 powerL
+float32 powerR
+float32 duration
+---
+uint32 fault_flag
