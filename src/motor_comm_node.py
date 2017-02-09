@@ -59,6 +59,7 @@ def motor_node():
   rospy.init_node('motor_comm')
   rate = rospy.Rate(20)
   
+  print "entering main loop"
   #spins at rate and puts the motors response on ROS
   while not rospy.is_shutdown():
     motors.now = rospy.get_rostime()
@@ -72,6 +73,7 @@ def motor_node():
     rate.sleep()
 
 if __name__ == '__main__':
+  print "starting main"
   try: 
     motor_node()
   except rospy.ROSInterruptException:

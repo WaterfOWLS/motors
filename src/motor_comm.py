@@ -10,7 +10,7 @@ class motor_comm:
         # configuration constants
         self.portname = "/dev/ttyAMA0" # serial port name
         self.baudrate = 115200 # bitrate for comm channel
-        self.port_timeout = 1 # timeout time in seconds for serial port
+        self.port_timeout = 0.01 # timeout time in seconds for serial port
 
         # VRCSR protocol defines  
         self.SYNC_REQUEST  =  0x5FF5
@@ -128,7 +128,7 @@ class motor_comm:
 
         #put the packet on the wire
         self.port.write(bytes(packet))
-
+        
         #get the response
         expected_response_length = self.PROTOCOL_VRCSR_HEADER_SIZE + self.PROTOCOL_VRCSR_XSUM_SIZE +  self.RESPONSE_THRUSTER_STANDARD_LENGTH +  self.PROTOCOL_VRCSR_XSUM_SIZE
 
@@ -138,6 +138,7 @@ class motor_comm:
         #read in received lines sent from motor
         response_buf = self.port.read(expected_response_length)
 
+        '''
         #parse the response. If no response all zeros in data
         try:
             self.response = struct.unpack('=HBBBB I BffffB I', response_buf)
@@ -148,7 +149,10 @@ class motor_comm:
             for x in range(2,13):
                 self.response.append(0)
 
+        '''
         self.send_motor_command=False
+       
+        
         return True
 
     def toggle_node_id(self):

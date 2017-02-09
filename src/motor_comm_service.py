@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-'''
-'''
 from motor_comm import *
 import rospy
 from motors.srv import MotorPower2
+from math import exp
 
 '''
 MotorHandler - holds stateful information about motors, including power of
@@ -18,27 +17,44 @@ class MotorHandler:
     self.motors = motors
     self.powerL = powerL
     self.powerR = powerR
+    self.prevPowerL = 0.0
+    self.prevPowerR = 0.0
     self.duration = 0
+    self.reqTime = 0
 
   # callback to set motor power when ROS service request is made
   def motorHandlerCallback(self, req):
+    self.prevPowerL = self.powerL
+    self.prevPowerR = self.powerR
     self.powerL = req.powerL
     self.powerR = req.powerR
     self.duration = req.duration
+    self.reqTime = rospy.get_rostime().to_sec()
+
+    return 1
+
+    '''
     # set the thrust to the new values and send it to the motors once
     self.motors.set_thrust(self.powerL, self.powerR)
     if self.motors.send_motors_power_level():
         return 1 # response from motors parsed correctly (currently it is not)
     else: return 0 # response from motors parsed incorrectly  ^ so it will always return 0
+    '''
 
   # simple function to stop the motors
   def stop(self):
-     self.motors.set_thrust(0, 0)
-     self.motors.send_motors_power_level()
+    self.prevPowerL = self.powerL
+    self.prevPowerR = self.powerR
+    self.powerL = 0
+    self.powerR = 0
+    self.duration = 1
+    self.reqTime = rospy.get_rostime().to_sec()
 
 # end class 
 
 def main():
+
+  tau = 3.5 # define time constant 
   motors = motor_comm() # create a motor communication object to send binary
                         # packets to motor controllers
   motor_handler = MotorHandler(motors) # object to handle motor state and callbacks
@@ -51,21 +67,35 @@ def main():
   while not rospy.is_shutdown(): # infinite loop until shutdown
 
     # used in inner while loop to log time since previous iteraiton
-    old_time = rospy.get_rostime().to_sec()
-    new_time = 0
+    time_left = 100
 
-    while motor_handler.duration > 0:
+    while time_left > 0:
 
-      new_time = rospy.get_rostime().to_sec() # get current time
+      t = rospy.get_rostime().to_sec() # get current time
+      t_diff = t - motor_handler.reqTime
       # decrement duration by difference between now and time before last sleep
-      motor_handler.duration -= (new_time - old_time)
+      time_left = motor_handler.duration - t_diff
+
+      # get the difference between the new and old powers
+      powerLDiff = motor_handler.powerL - motor_handler.prevPowerL
+      powerRDiff = motor_handler.powerR - motor_handler.prevPowerR
+
+      newPowerL = motor_handler.powerL - powerLDiff * exp(-t_diff / tau)
+      newPowerR = motor_handler.powerR - powerRDiff * exp(-t_diff / tau)
+      threshold = 0.02
+      if abs(newPowerL) < threshold:
+        newPowerL = 0.0
+      if abs(newPowerR) < threshold:
+        newPowerR = 0.0
+
+      motors.set_thrust(newPowerL, newPowerR)
 
       # send_motors_power level currently doesn't return anything meaningfull
       if motors.send_motors_power_level():
         pass
 
+     
       # get the time at the bottom of the loop before sleeping
-      old_time = new_time
       rate.sleep() # pause to get a 20Hz loop
 
     # end while time_left > 0

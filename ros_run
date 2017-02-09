@@ -4,13 +4,12 @@
 run_ros () {
   HOME="/home/pi"
 # source ros environment
-  . $HOME/catkin_ws/devel/setup.sh;
+  . /home/pi/catkin_ws/devel/setup.sh;
   export ROS_HOSTNAME=192.168.0.10
 # run ros core
   ( roscore ) &
-# run motor_comm_node
-  python $HOME/catkin_ws/src/Motors/src/motor_comm_node.py &
-  python $HOME/catkin_ws/src/Motors/src/motor_comm_service.py &
+  sleep 5
+  python /home/pi/catkin_ws/src/Motors/src/motor_comm_service.py &>> /home/pi/motor_comm_service.log
 }
 
 IP="`ifconfig  | grep 'inet addr:'192.168.0.10''| cut -d: -f2 | awk '{ print $1}'`";
