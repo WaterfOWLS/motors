@@ -2,7 +2,6 @@
 '''
 joystick_controller:
     ros node for controlling the boat's motors using the joystick
-
 '''
 
 from motor_comm import *
